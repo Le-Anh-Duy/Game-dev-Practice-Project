@@ -31,13 +31,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 		isRunning = true;
 	}
-	std::cout << "loaded  1" << std::endl;
-
     SDL_Surface* tmpSurface = IMG_Load("./assets/player.png");
-	std::cout << "loaded" << std::endl;
     playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
-	// exit(0);
 }
 
 void Game::handleEvents()
@@ -59,8 +55,8 @@ void Game::handleEvents()
 void Game::update()
 {
 	cnt++;
-	destR.h = 100;
-	destR.w = 100;
+	destR.h = 64;
+	destR.w = 64;
 
 	destR.x = cnt;
 
