@@ -188,6 +188,7 @@ void Game::update()
 		SDL_DestroyTexture(bullets.front()->texture);
 		std::cout << "deleted successfully texture bullet" << std::endl;
 		std::cout << "deleted successfully bullet" << std::endl;
+		delete bullets.front();
 		bullets.pop_front();
 	}
 
