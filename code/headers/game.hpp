@@ -9,8 +9,6 @@
 class Game
 {
 public:
-	Game();
-	~Game();
 
 	void init(const char* title, int width, int height, bool fullscreen);
 
@@ -23,6 +21,8 @@ public:
 	void blit(SDL_Texture* texture, int x, int y); // move a texture to a specific coordinate on the window
 	SDL_Renderer *renderer;
 	
+	Game();
+	~Game();
 private:
 	SDL_Window *window;
 	bool isRunning = false;
@@ -41,7 +41,7 @@ public:
 	int x;
 	int y;
 	int speed;
-	
+
 	bool up, down, left, right;
 
 	void init(const char* name, SDL_Renderer *&rend);

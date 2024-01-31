@@ -3,6 +3,7 @@
 
 entity::entity() {
 	up = down = right = left = 0;
+	texture = nullptr;
 };
 
 SDL_Renderer* GLOBAL_RENDERER;
@@ -26,7 +27,8 @@ Game::Game()
 
 Game::~Game()
 {
-	delete gun;
+	// delete gun;-> this caused the bug
+	std::cout << "game fucked" << std::endl;
 	return;
 }
 
@@ -186,10 +188,12 @@ void Game::update()
 		if (bullets.front()->x <= 1200) break;
 		std::cout << "preparing for delete bullet" << std::endl;
 		SDL_DestroyTexture(bullets.front()->texture);
-		std::cout << "deleted successfully texture bullet" << std::endl;
-		std::cout << "deleted successfully bullet" << std::endl;
+		std::cout << "gonna delete bullet " << ' ' << bullets.front() << std::endl;
 		delete bullets.front();
+		std::cout << "deleted successfully bullet" << std::endl;
+		// break;
 		bullets.pop_front();
+		// exit(0);
 	}
 
 	gun->update();
