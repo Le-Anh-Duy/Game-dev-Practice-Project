@@ -4,3 +4,5 @@
     https://stackoverflow.com/questions/21007329/what-is-an-sdl-renderer/21007477#21007477
 ## 2. Renderer problems
     need to render on only one renderer
+## 3. Destructor must has return
+    or else it would result in an infinite loop

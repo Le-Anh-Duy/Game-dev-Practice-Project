@@ -1,33 +1,40 @@
+#include <deque>
 #include "game.hpp"
+
 entity::entity() {
 	up = down = right = left = 0;
 };
-entity::~entity() {};
+
+SDL_Renderer* GLOBAL_RENDERER;
+
+entity::~entity() {
+	std::cout << "this is being called" << std::endl;
+	return;
+	// SDL_DestroyTexture(texture);
+};
 void entity::move() {};
 void entity::update() {
-
-	if (up) y -= 4;
-	if (down) y += 4;
-	if (right) x += 4;
-	if (left) x -= 4;
-
+	if (up) y -= speed;
+	if (down) y += speed;
+	if (right) x += speed;
+	if (left) x -= speed;
 };
 
-entity* mainChar = NULL;
+entity* gun = NULL;
 Game::Game()
 {}
 
 Game::~Game()
 {
-	delete mainChar;
+	delete gun;
+	return;
 }
-
-
 
 void entity::init(const char* name, SDL_Renderer* &rend) {
 	std::cout << "after pass " << &rend << '\n';
 	texture = loadTexture(name, rend);
 	x = y = 0;
+	speed = 4;
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 
 	w = 100; h = 100;
@@ -54,35 +61,53 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 		}
 		std::cout << "init renderer" << ' ' << &renderer << std::endl;
 		isRunning = true;
+
+		GLOBAL_RENDERER = renderer;
+
 	}
 
-	mainChar = new entity;
-	std::cout << "should renderer" << ' ' << &renderer << std::endl;
-	mainChar->init("assets/player.png", renderer);
+	gun = new entity;
+	gun->init("assets/gun.png", renderer);
 }
 
-
+void shoot();
 void handleKeyDown(SDL_KeyboardEvent *event) {
 	if (event->repeat == 0)
 	{
 		switch (event->keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			mainChar->up = 1;
+			gun->up = 1;
 			break;
 		case SDL_SCANCODE_DOWN:
-			mainChar->down = 1;
+			gun->down = 1;
 			break;
 		case SDL_SCANCODE_LEFT:
-			mainChar->left = 1;
+			gun->left = 1;
 			break;
 		case SDL_SCANCODE_RIGHT:
-			mainChar->right = 1;
+			gun->right = 1;
 			break;
+		case SDL_SCANCODE_SPACE:
+			shoot();
 		default:
 			break;
 		}
 	}
+}
+
+std::deque <entity*> bullets;
+
+void shoot() {
+	entity* bullet = new entity;
+	bullet->init("assets/bullet.png", GLOBAL_RENDERER);
+	bullet->speed = 10;
+	bullet->x = gun->x;
+	bullet->y = gun->y;
+	bullet->right = true;
+	bullet->left = bullet->up = bullet->down = false;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+	bullets.push_back(bullet);
 }
 
 void handleKeyUp(SDL_KeyboardEvent *event) {
@@ -91,18 +116,17 @@ void handleKeyUp(SDL_KeyboardEvent *event) {
 		switch (event->keysym.scancode)
 		{
 		case SDL_SCANCODE_UP:
-			mainChar->up = 0;
+			gun->up = 0;
 			break;
 		case SDL_SCANCODE_DOWN:
-			mainChar->down = 0;
+			gun->down = 0;
 			break;
 		case SDL_SCANCODE_LEFT:
-			mainChar->left = 0;
+			gun->left = 0;
 			break;
 		case SDL_SCANCODE_RIGHT:
-			mainChar->right = 0;
+			gun->right = 0;
 			break;
-		
 		default:
 			break;
 		}
@@ -129,6 +153,7 @@ void Game::handleEvents()
 			break;
 	}
 }
+// SDL_Texture*       loadTexture(const char* tex_name, SDL_Renderer *&rend); // load texture from file name
 
 SDL_Texture* Game::loadTexture(const char* filename, SDL_Renderer* &rend) {
 	SDL_Texture* tex;
@@ -154,13 +179,29 @@ void Game::update()
 {
 	cnt++;
 	std::cout << cnt << ' ' << &renderer << std::endl;
-	mainChar->update();
+	for (entity* bullet: bullets) 
+		bullet->update();
+
+	while (!bullets.empty()) {
+		if (bullets.front()->x <= 1200) break;
+		std::cout << "preparing for delete bullet" << std::endl;
+		SDL_DestroyTexture(bullets.front()->texture);
+		std::cout << "deleted successfully texture bullet" << std::endl;
+		std::cout << "deleted successfully bullet" << std::endl;
+		bullets.pop_front();
+	}
+
+	gun->update();
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	blit(mainChar->texture, mainChar->x, mainChar->y);
+	for (entity* bullet: bullets)
+		blit(bullet->texture, bullet->x, bullet->y);
+	blit(gun->texture, gun->x, gun->y);
+	
+	
 	SDL_RenderPresent(renderer);
 }
 

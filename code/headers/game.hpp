@@ -1,4 +1,6 @@
+
 #include <iostream>
+#include <vector>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 
@@ -17,7 +19,7 @@ public:
 	bool running() { return isRunning; }
 	void render();
 	void clean();
-	SDL_Texture* loadTexture(const char* tex_name, SDL_Renderer *&rend); // load texture from file name
+	SDL_Texture* loadTexture(const char* filename, SDL_Renderer *&rend); // load texture from file name
 	void blit(SDL_Texture* texture, int x, int y); // move a texture to a specific coordinate on the window
 	SDL_Renderer *renderer;
 	
@@ -38,7 +40,8 @@ public:
 	int h;
 	int x;
 	int y;
-
+	int speed;
+	
 	bool up, down, left, right;
 
 	void init(const char* name, SDL_Renderer *&rend);
