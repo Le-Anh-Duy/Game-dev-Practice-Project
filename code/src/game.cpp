@@ -31,10 +31,60 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	}
 
 	{
-		pistal = new gun;
+		pistal = new gun();
 		pistal->init("assets/gun.png", renderer);
+		std::cout << pistal->x << ' ' << pistal->y << '\n';
 	}
 
+}
+
+void do_key_down(SDL_KeyboardEvent *event) {
+		std::cout << "fucnasdfkas 22222222\n";
+
+	if (event->repeat == 0)
+		{
+			std::cout << "fucnasdfkas 111111\n";
+			switch (event->keysym.scancode)
+			{
+			case SDL_SCANCODE_UP:
+				pistal->up = 1, std::cout << "FUCKKKKKKKKKKK\n";
+				break;
+			case SDL_SCANCODE_DOWN:
+				pistal->down = 1;
+				break;
+			case SDL_SCANCODE_LEFT:
+				pistal->left = 1;
+				break;
+			case SDL_SCANCODE_RIGHT:
+				pistal->right = 1;
+				break;
+			default:
+				break;
+			}
+		}
+}
+
+void do_key_up(SDL_KeyboardEvent *event) {
+	if (event->repeat == 0)
+		{
+			switch (event->keysym.scancode)
+			{
+			case SDL_SCANCODE_UP:
+				pistal->up = 0;
+				break;
+			case SDL_SCANCODE_DOWN:
+				pistal->down = 0;
+				break;
+			case SDL_SCANCODE_LEFT:
+				pistal->left = 0;
+				break;
+			case SDL_SCANCODE_RIGHT:
+				pistal->right = 0;
+				break;
+			default:
+				break;
+			}
+		}
 }
 
 void Game::handleEvents()
@@ -45,6 +95,12 @@ void Game::handleEvents()
 	{
 		case SDL_QUIT :
 			isRunning = false;
+			break;
+		case SDL_KEYDOWN:
+			do_key_down(&event.key);
+			break;
+		case SDL_KEYUP:
+			do_key_up(&event.key);
 			break;
 		default:
 			break;
@@ -69,6 +125,9 @@ void Game::blit(SDL_Texture* texture, int x, int y) {
 void Game::update()
 {
 	cnt++;	
+	std::cout << pistal->down << '\n';
+	pistal->fixed_dir();
+	pistal->move();
 }
 
 void Game::render() // reder all entities

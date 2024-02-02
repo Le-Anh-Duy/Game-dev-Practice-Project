@@ -7,11 +7,12 @@ moving_with_arrows::moving_with_arrows() {
 }
 
 void moving_with_arrows::move() {
-    
+    if (dir.x == 0 && dir.y == 0) return;
     float ratio = 1.0 / dir.lenght();
-    
+    std::cout << "from " << x << ' ' << y << " with speed = " << speed << " with dir lenght = " << dir.lenght() << ' ';
     x += dir.x * speed * ratio; 
     y += dir.y * speed * ratio;
+    std::cout << "Moved to " << x << ' ' << y << std::endl;
 }
 
 void moving_with_arrows::fixed_dir() {
@@ -20,4 +21,5 @@ void moving_with_arrows::fixed_dir() {
     if (down) dir = add(dir, DOWN);
     if (left) dir = add(dir, LEFT);
     if (right) dir = add(dir, RIGHT);
+    // std::cout << up << ' ' << down << ' ' << left << ' ' << right << ' ' << dir.x << ' ' << dir.y << '\n';
 }
