@@ -15,6 +15,5 @@ SDL_Texture* loadTexture(const char* filename, SDL_Renderer* &rend) {
 // void init(const char* name, SDL_Renderer *&rend);
 void entity::init(const char* name, SDL_Renderer* rend) {
 	texture = loadTexture(name, rend);
-	x = y = 0;
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 }

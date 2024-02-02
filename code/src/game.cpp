@@ -9,6 +9,8 @@ Game::~Game()
 
 gun* pistal;
 
+SDL_Renderer* GLOBAL_RENDERER;
+
 void Game::init(const char* title, int width, int height, bool fullscreen)
 {
 	int flags = 0;
@@ -31,6 +33,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	}
 
 	{
+		GLOBAL_RENDERER = renderer;
 		pistal = new gun();
 		pistal->init("assets/gun.png", renderer);
 		std::cout << pistal->x << ' ' << pistal->y << '\n';
@@ -57,6 +60,11 @@ void do_key_down(SDL_KeyboardEvent *event) {
 				break;
 			case SDL_SCANCODE_RIGHT:
 				pistal->right = 1;
+				break;
+			case SDL_SCANCODE_SPACE:
+				pistal->shoot();
+				pistal->fired_tail->init("assets/bullet.png", GLOBAL_RENDERER);
+				std::cout << "really do this\n";
 				break;
 			default:
 				break;
@@ -125,15 +133,30 @@ void Game::blit(SDL_Texture* texture, int x, int y) {
 void Game::update()
 {
 	cnt++;	
-	std::cout << pistal->down << '\n';
 	pistal->fixed_dir();
 	pistal->move();
+
+	bullet* head = pistal->fired_head;
+	while (head) {
+		head->move();
+		bullet* prev = head;
+		head = head->pNext;
+		if (prev->x > 500) pistal->vanish(prev);		
+	}	
 }
 
 void Game::render() // reder all entities
 {
 	SDL_RenderClear(renderer);
 	blit(pistal->texture, pistal->x, pistal->y);
+
+	bullet* head = pistal->fired_head;
+	
+	while (head) {
+		blit(head->texture, head->x, head->y);
+		head = head->pNext;
+	}
+
 	SDL_RenderPresent(renderer);
 }
 

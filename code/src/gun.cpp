@@ -7,7 +7,9 @@ bullet::bullet(int SPEED, vec4 DIR) {
 }
 
 void gun::shoot() {
-    bullet* newBullet = new bullet(10, dir);
+    bullet* newBullet = new bullet(10, RIGHT);
+    newBullet->x = x;
+    newBullet->y = y;
 
     if (fired_tail == nullptr) {
         fired_head = fired_tail = newBullet;
@@ -19,23 +21,36 @@ void gun::shoot() {
     fired_tail = newBullet;
 }
 
-void gun::vanish(bullet* b) {
-    bullet* prev = b->pPrev;
-    bullet* next = b->pNext;
-    delete b;
-
-    if (prev != nullptr)
-        prev->pNext = next;
-    if (next != nullptr)
-        next->pPrev = prev;
-}
-
 gun::gun() {
     fired_head = fired_tail = nullptr;
     up = down = left = right = false;
     speed = 5;
+    x = y = 0;
+}
+gun::~gun() {};
+
+void gun::vanish(bullet* b) {
+
+    if (b->pNext == nullptr) {
+        fired_tail = nullptr;
+        if (b->pPrev) 
+            fired_tail = b->pPrev;
+    }
+
+    if (b->pPrev == nullptr) {
+        fired_head = nullptr;
+        if (b->pNext)
+            fired_head = b->pNext;
+    }
+
+    delete b;
 }
 
 bullet::bullet() {};
-bullet::~bullet() {};
-gun::~gun() {};
+
+bullet::~bullet() {    
+    if (pPrev != nullptr)
+        pPrev->pNext = pNext;
+    if (pNext != nullptr)
+        pNext->pPrev = pPrev;
+}
