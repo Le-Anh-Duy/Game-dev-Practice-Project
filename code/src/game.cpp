@@ -46,11 +46,10 @@ void do_key_down(SDL_KeyboardEvent *event) {
 
 	if (event->repeat == 0)
 		{
-			std::cout << "fucnasdfkas 111111\n";
 			switch (event->keysym.scancode)
 			{
 			case SDL_SCANCODE_UP:
-				pistal->up = 1, std::cout << "FUCKKKKKKKKKKK\n";
+				pistal->up = 1;
 				break;
 			case SDL_SCANCODE_DOWN:
 				pistal->down = 1;
@@ -64,14 +63,12 @@ void do_key_down(SDL_KeyboardEvent *event) {
 			case SDL_SCANCODE_SPACE:
 				pistal->shoot();
 				pistal->fired_tail->init("assets/bullet.png", GLOBAL_RENDERER);
-				std::cout << "really do this\n";
 				break;
 			default:
 				break;
 			}
 		}
 }
-
 void do_key_up(SDL_KeyboardEvent *event) {
 	if (event->repeat == 0)
 		{
